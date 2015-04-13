@@ -109,8 +109,9 @@ def validate_instance(params):
             'supported.'
         )
     try:
-        urlopen('http://169.254.169.254/latest/meta-data/', timeout=1)
-        raise RuntimeError('Amazon EC2 instances are not supported.')
+        image_id = urlopen('http://169.254.169.254/latest/meta-data/ami-id', timeout=1)
+        if re.search("^ami", image_id.read()):
+            raise RuntimeError('Amazon EC2 instances are not supported.')
     except (URLError, timeout):
         pass
 
